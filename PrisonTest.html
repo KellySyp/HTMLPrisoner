@@ -1,0 +1,122 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<script>
+			//sets dates
+			var len = 100;
+			var papers = [];
+			var prisonerCounter = 0;
+			var turnCounter = 0;
+
+			$(document).ready(function()
+			{
+				$("#setup").show();
+				$("#Game").hide();
+				writeIntro();
+				
+				$("#StartBtn").click(function(){
+					len = $("#qty").val();
+					writeIntro();
+					endTurn();
+					drawGame();
+					$("#setup").hide();
+					$("#Game").show();
+				});
+				
+				function endTurn(){
+					turnCounter = 0;
+					if(prisonerCounter == len){
+						window.alert("You Won!!");
+						location.reload();
+					}else{
+						prisonerCounter++;
+						$("#result").text("Waiting");
+						$("#holder").text(prisonerCounter);
+					}
+				}
+				
+				function drawGame(){
+				
+					while(papers.length < len){
+						var r = Math.floor(Math.random() * len) + 1;
+						if(papers.indexOf(r) === -1) papers.push(r);
+					}
+					
+					for(i = 0; i < len; i++){
+						$("body").append("<div id='"+(i+1)+"' class='box'>"+(i+1)+"</div>");
+					};
+					
+					$(".box").click(function(){
+						turnCounter++;
+						var result = papers[$(this).attr("id") -1];
+						$("#result").text("Turn: "+turnCounter+" Result:" + result);
+						if(result == prisonerCounter){
+							window.alert("Pass");
+							endTurn();
+						}else if(turnCounter >= (len / 2)){
+							window.alert("Fail! Game Over!");
+							location.reload();
+						}
+					});
+				}
+				
+				function writeIntro(){
+					$("#introText").text("The director of a prison offers "+len+" death row prisoners, who are numbered from 1 to "+len+", a last chance. A room contains a cupboard with "+len+" drawers. The director randomly puts one prisoner's number in each closed drawer. The prisoners enter the room, one after another. Each prisoner may open and look into "+len/2+" drawers in any order. The drawers are closed again afterwards. If, during this search, every prisoner finds their number in one of the drawers, all prisoners are pardoned. If just one prisoner does not find their number, all prisoners die. Before the first prisoner enters the room, the prisoners may discuss strategy — but may not communicate once the first prisoner enters to look in the drawers. What is the prisoners' best strategy?");
+				}
+			});
+		
+		</script>
+		
+		<style>
+			body
+			{
+				font-family: Arial, Helvetica, sans-serif;
+			}
+			.box
+			{
+				outline: solid;
+				margin: 10px;
+				padding: 10px;
+				width: 20px;
+				display: inline-block;
+			}
+			.output
+			{
+				outline: solid;
+				margin: 30px;
+				padding: 30px;
+				width: 40px;
+				display: inline-block;
+				vertical-align:top;
+			}
+			#result
+			{
+				outline-color: red;
+				width: 200px;
+			}
+			#introText
+			{
+				padding: 10px;
+			}
+
+		</style>
+	</head>
+	<body>
+		<div id="intro">
+				<p id="introText">
+				</p>
+		</div>
+		<div id="setup">
+			<label for="qty">Number of Prisoners:</label>
+			<input type="number" id="qty" name="qty" value="100">
+			<button type="button" id="StartBtn">Start</button>
+		</div>
+		<div id="Game">
+			<div class="output" id="holder"></div>
+			<div class="output" id="result"></div>
+			<div id="boxes"></div>
+		</div>
+	</body>
+</html>
